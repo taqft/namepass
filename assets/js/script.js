@@ -19,6 +19,7 @@
 // I am presented with a series of prompts for username criteria
 // I select the criteria for my username
 // I am able to select a minimum and maximum length of username between 3 and 30
+// TODO: multiple words? How are usernames constructed based on user input
 
 queryURL = `https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=noun&minLength=5&maxLength=5&api_key=`
 
@@ -42,7 +43,7 @@ const pullRandomWord = () => {
 
 pullRandomWord();
 
-// I can confirm whether to include verbs, nouns, rhyming words, or easy-to-say (low syllable) words
+// I can confirm whether to include verbs, nouns, and the frequency of words (wordnik option)
 // when all prompts are answered
 // a username is generated with the matching criteria
 
