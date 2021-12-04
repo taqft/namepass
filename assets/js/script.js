@@ -28,6 +28,10 @@ specialInput.checked = true;
 verbInput.checked = true;
 commonWordInput.checked = true;
 
+// Initialize API parameters
+let partOfSpeech = 'verb';
+let minimumWordFrequency = '1000';
+
 // Choose password length 8-128 characters
 // Grab the slider value and insert into the input field
 
@@ -74,11 +78,33 @@ const generatePassword = () => {
 // one word
 // queryURL = `https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=noun&minLength=5&maxLength=5&api_key=`
 
-// array of objects of words
-queryURL = `https://api.wordnik.com/v4/words.json/randomWords?hasDictionaryDef=true&includePartOfSpeech=verb&minCorpusCount=1&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&limit=2&api_key=`
+// I can confirm whether to include verbs, nouns, and the frequency of words (wordnik option)
+// when all prompts are answered
+// a username is generated with the matching criteria
 
+const generateUsername = () => {
 
-const pullRandomWord = () => {
+    // check the options selected by the user to use for generating the username
+
+    if (verbInput.checked) {
+        partOfSpeech = 'verb';
+    } else {
+        partOfSpeech = 'noun';
+    }
+
+    if (commonWordInput.checked) {
+        minimumWordFrequency = '1000';
+    } else {
+        minimumWordFrequency = '100';
+    }
+
+}
+
+const pullRandomWords = () => {
+
+    // array of objects of words
+    queryURL = `https://api.wordnik.com/v4/words.json/randomWords?hasDictionaryDef=true&includePartOfSpeech=${partOfSpeech}&minCorpusCount=${minimumWordFrequency}&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=3&maxLength=15&limit=2&api_key=`
+
 
     fetch(queryURL).then(response =>
         response.json().then(data => ({
@@ -90,29 +116,16 @@ const pullRandomWord = () => {
                 console.log(`Status: ${res.status} OK`);
                 console.log(res.data);
 
+                let firstWord = res.data[0].word;
+                let secondWord = res.data[1].word;
+                let newUsername = firstWord + secondWord;
+
+                console.log(newUsername);
+
             } else {
                 console.log(`An error occurred. Status: ${res.status}`);
             }
         }));
-}
-
-pullRandomWord();
-
-// I can confirm whether to include verbs, nouns, and the frequency of words (wordnik option)
-// when all prompts are answered
-// a username is generated with the matching criteria
-
-const generateUsername = () => {
-
-    // check the options selected by the user to use for generating the username
-    let partOfSpeech = '';
-
-    if (verbInput.checked) {
-        partOfSpeech = 'verb';
-    } else {
-        partOfSpeech = 'noun';
-    } 
-
 }
 
 // I am able to press the button and generate both at the same time
