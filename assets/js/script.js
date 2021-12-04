@@ -1,5 +1,36 @@
 // JavaScript logic
 
+// declare global vars
+// username options
+const verbInput = $('#verbs'); // id="verbs"
+const nounInput = $('#nouns'); // id="nouns"
+const maxWordLength = $('#word-max'); // id="word-max"
+const commonWordInput = $('#common'); // id="common"
+const uncommonWordInput = $('#uncommon'); // id="uncommon"
+
+// verbs and nouns are mutally exclusive
+// common and uncommon words are mutually exclusive
+
+// password options
+const lowerInput = $('#lowercase'); // id="lowercase"
+const upperInput = $('#uppercase'); // id="uppercase"
+const numInput = $('#numbers'); // id="numbers"
+const specialInput = $('#special'); // id="special"
+const passLengthSlider = $('#passLength'); // id="passLength"
+
+// Initialize necessary checkboxes so they are checked when the page loads.
+// default options are loaded for each, usernames and passwords
+lowerInput.checked = true;
+upperInput.checked = true;
+numInput.checked = true;
+specialInput.checked = true;
+
+verbInput.checked = true;
+commonWordInput.checked = true;
+
+// Choose password length 8-128 characters
+// Grab the slider value and insert into the input field
+
 // GIVEN I need a new, secure password
 // I am presented with a series of prompts for password criteria
 // prompted for password criteria
@@ -12,16 +43,40 @@
 // my input should be validated and at least one character type should be selected
 // a password is generated that matches the selected criteria
 // the password is generated
-// and displayed on the page
 
+const generatePassword = () => {
+
+}
+
+// and displayed on the page
 
 // I need a new username
 // I am presented with a series of prompts for username criteria
 // I select the criteria for my username
-// I am able to select a minimum and maximum length of username between 3 and 30
+// I am able to select a maximum length of username between 3 and 30
 // TODO: multiple words? How are usernames constructed based on user input
 
-queryURL = `https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=noun&minLength=5&maxLength=5&api_key=`
+// BONUS: add input box that corresponds with 
+// let maxWordLengthSlider = document.getElementById("word-length-slider"); // id="word-length-slider"
+// let maxWordLengthInput = document.getElementById("word-length-input"); // id="word-length-input"
+// maxWordLengthInput.value = maxWordLengthSlider.value;
+
+// // Set the input value to the slider value
+// maxWordLengthSlider.oninput = () => {
+//     maxWordLengthInput.value = this.value;
+// }
+
+// // Set the slider value to the input value
+// maxWordLengthInput.oninput = () => {
+//     maxWordLengthSlider.value = this.value;
+// }
+
+// one word
+// queryURL = `https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=noun&minLength=5&maxLength=5&api_key=`
+
+// array of objects of words
+queryURL = `https://api.wordnik.com/v4/words.json/randomWords?hasDictionaryDef=true&includePartOfSpeech=verb&minCorpusCount=1&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&limit=2&api_key=`
+
 
 const pullRandomWord = () => {
 
@@ -47,8 +102,19 @@ pullRandomWord();
 // when all prompts are answered
 // a username is generated with the matching criteria
 
+const generateUsername = () => {
 
-// default options are loaded for each, usernames and passwords
+    // check the options selected by the user to use for generating the username
+    let partOfSpeech = '';
+
+    if (verbInput.checked) {
+        partOfSpeech = 'verb';
+    } else {
+        partOfSpeech = 'noun';
+    } 
+
+}
+
 // I am able to press the button and generate both at the same time
 
 
