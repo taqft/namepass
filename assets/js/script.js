@@ -128,9 +128,30 @@ const pullRandomWords = () => {
         }));
 }
 
+
+// grab existing scores from storage
+const namePass = JSON.parse(localStorage.getItem(`namePass`));
+
+
+
+// dynamically add all highscores from storage + the new highscore to the screen
+for (var i = 0; i < namePass.length; i++) {
+    var namePassItem = $('<li>')
+        .text(`${i+1}. ${namePass[i].username} - ${namePass[i].password}`)
+        .addClass('btn btn-dark btn-rounded');//check md bootstrap
+    namePassEl.append(namePassItem);
+}
+
+
+let userPass = {};
+
+function saveNamePass() {
+    
+    let namePass = JSON.parse(localStorage.getItem(`namePass`) || "[]");
+    namePass.push(userPass);
+    localStorage.setItem(`namePass`, JSON.stringify(namePass));}
+
 // I am able to press the button and generate both at the same time
-
-
 // I have the option to save my username + password combo for later
 // When I press save, at least one is saved of username and password
 // one is required to be saved, but both are not required
