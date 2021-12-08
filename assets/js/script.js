@@ -34,6 +34,9 @@ const upperChars = [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 
 const numChars = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
 const specialChars = [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 58, 59, 60, 61, 62, 63, 64, 91, 92, 93, 94, 95, 96, 123, 124, 125, 126];
 
+let possibleChars = [];
+let nums = [];
+
 // Initialize API parameters
 let partOfSpeech = 'verb';
 let minimumWordFrequency = '1000';
@@ -52,21 +55,42 @@ const validatePassInput = () => {
 const generatePassword = () => {
 
     // Choose password length 8-128 characters
-    let pwLength = passLengthSlider.value;
+    let passLength = 64; // passLengthSlider.value;
+    let passText = $('#pw-text'); // id="pw-text"
     let newChar = '';
     let nextChar = '';
-    let possibleChars = [];
-    let pwText = $('#pw-text'); // id="pw-text"
-
-    newChar = '';
-    nextChar = '';
-    pwText.innerHTML = '';
+    let myString = '';
+    
+    passText.innerHTML = '';
     possibleChars = [];
+    nums = [];
 
     initPassSettings();
 
-    // a password is generated that matches the selected criteria
+    let queryURL = `https://www.random.org/decimal-fractions/?num=${passLength}&dec=20&col=1&format=plain&rnd=new`;
 
+    fetch(queryURL).then(response => {
+        response.text().then(data => ({
+            data: data,
+            status: response.status
+        })).then(res => {
+            if (res.status === 200) {
+                console.log(`Status: ${res.status} OK`);
+                console.log(res.data);
+                nums = res.data.split('\n');
+                console.log(nums);
+
+                // a password is generated that matches the selected criteria
+                for (let i = 0; i < passLength; i++) {
+                    nextChar = Math.floor(nums[i] * (possibleChars.length - 1));
+                    newChar = String.fromCharCode(possibleChars[nextChar]);
+                    myString += newChar;
+                }
+
+                console.log(myString);
+            }
+        })
+    });
 
 }
 
@@ -111,31 +135,14 @@ const initPassSettings = () => {
 // queryURL = `https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=noun&minLength=5&maxLength=5&api_key=`
 
 // when all prompts are answered
-// a username is generated with the matching criteria
 
 const generateUsername = () => {
-
-    // check the options selected by the user to use for generating the username
-    // I can confirm whether to include verbs, nouns, and the dictionary frequency of words (wordnik option)
-    if (verbInput.checked) {
-        partOfSpeech = 'verb';
-    } else {
-        partOfSpeech = 'noun';
-    }
-
-    if (commonWordInput.checked) {
-        minimumWordFrequency = '1000';
-    } else {
-        minimumWordFrequency = '100';
-    }
-
-}
-
-const pullRandomWords = () => {
 
     // array of objects of words, only retrieving limit = 2 words for now
     queryURL = `https://api.wordnik.com/v4/words.json/randomWords?hasDictionaryDef=true&includePartOfSpeech=${partOfSpeech}&minCorpusCount=${minimumWordFrequency}&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=3&maxLength=15&limit=2&api_key=`
 
+    initUsernameSettings();
+    
 
     fetch(queryURL).then(response =>
         response.json().then(data => ({
@@ -159,7 +166,25 @@ const pullRandomWords = () => {
         }));
 }
 
+const initUsernameSettings = () => {
+    // check the options selected by the user to use for generating the username
+    // I can confirm whether to include verbs, nouns, and the dictionary frequency of words (wordnik option)
+    if (verbInput.checked) {
+        partOfSpeech = 'verb';
+    } else {
+        partOfSpeech = 'noun';
+    }
+
+    if (commonWordInput.checked) {
+        minimumWordFrequency = '1000';
+    } else {
+        minimumWordFrequency = '100';
+    }
+}
+
 // I am able to press the button and generate both at the same time
+generateUsername();
+generatePassword();
 
 
 // I have the option to save my username + password combo for later
