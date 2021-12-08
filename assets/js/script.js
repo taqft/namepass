@@ -20,36 +20,92 @@ const passLengthSlider = $('#passLength'); // id="passLength"
 
 // Initialize necessary checkboxes so they are checked when the page loads.
 // default options are loaded for each, usernames and passwords
+verbInput.checked = true;
+commonWordInput.checked = true;
+
 lowerInput.checked = true;
 upperInput.checked = true;
 numInput.checked = true;
 specialInput.checked = true;
 
-verbInput.checked = true;
-commonWordInput.checked = true;
+// Define UTF codes for allowed password characters
+const lowerChars = [97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122];
+const upperChars = [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90];
+const numChars = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
+const specialChars = [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 58, 59, 60, 61, 62, 63, 64, 91, 92, 93, 94, 95, 96, 123, 124, 125, 126];
+
+let possibleChars = [];
+let userPass = {};
+let nums = [];
 
 // Initialize API parameters
 let partOfSpeech = 'verb';
 let minimumWordFrequency = '1000';
 
-// Choose password length 8-128 characters
-// Grab the slider value and insert into the input field
-
-// GIVEN I need a new, secure password
-// I am presented with a series of prompts for password criteria
-// prompted for password criteria
-// I select which criteria to include in the password
-// prompted for the length of the password
-// I choose a length of at least 8 characters and no more than 128 characters
-// asked for character types to include in the password
-// I confirm whether or not to include lowercase, uppercase, numeric, and/or special characters
-// I answer each prompt
-// my input should be validated and at least one character type should be selected
-// a password is generated that matches the selected criteria
-// the password is generated
+const validatePassInput = () => {
+    // I confirm whether or not to include lowercase, uppercase, numeric, and/or special characters
+    // my input should be validated and at least one character type should be selected
+    if (lowerInput.checked || upperInput.checked || numInput.checked || specialInput.checked) {
+        generatePassword();
+    } else {
+        alert("Please select an option.")
+        return;
+    }
+}
 
 const generatePassword = () => {
 
+    // Choose password length 8-128 characters
+    let passLength = 64; // passLengthSlider.value;
+    let passText = $('#pw-text'); // id="pw-text"
+    let newChar = '';
+    let nextChar = '';
+    let myString = '';
+    
+    passText.innerHTML = '';
+    possibleChars = [];
+    nums = [];
+
+    initPassSettings();
+
+    let queryURL = `https://www.random.org/decimal-fractions/?num=${passLength}&dec=20&col=1&format=plain&rnd=new`;
+
+    fetch(queryURL).then(response => {
+        response.text().then(data => ({
+            data: data,
+            status: response.status
+        })).then(res => {
+            if (res.status === 200) {
+                console.log(`Status: ${res.status} OK`);
+                console.log(res.data);
+                nums = res.data.split('\n');
+                console.log(nums);
+
+                // a password is generated that matches the selected criteria
+                for (let i = 0; i < passLength; i++) {
+                    nextChar = Math.floor(nums[i] * (possibleChars.length - 1));
+                    newChar = String.fromCharCode(possibleChars[nextChar]);
+                    myString += newChar;
+                }
+
+                console.log(myString);
+            }
+        })
+    });
+
+}
+
+const initPassSettings = () => {
+
+    if (lowerInput.checked) {
+        possibleChars = possibleChars.concat(lowerChars);
+    } else if (upperInput.checked) {
+        possibleChars = possibleChars.concat(upperChars);
+    } else if (numInput.checked) {
+        possibleChars = possibleChars.concat(numInput);
+    } else if (specialInput.checked) {
+        possibleChars = possibleChars.concat(specialChars);
+    }
 }
 
 // and displayed on the page
@@ -60,11 +116,12 @@ const generatePassword = () => {
 // I am able to select a maximum length of username between 3 and 30
 // TODO: multiple words? How are usernames constructed based on user input
 
-// BONUS: add input box that corresponds with 
+// BONUS: add input box that corresponds with slider values
 // let maxWordLengthSlider = document.getElementById("word-length-slider"); // id="word-length-slider"
 // let maxWordLengthInput = document.getElementById("word-length-input"); // id="word-length-input"
 // maxWordLengthInput.value = maxWordLengthSlider.value;
 
+// let the input value follow the slider value and vice-versa
 // // Set the input value to the slider value
 // maxWordLengthSlider.oninput = () => {
 //     maxWordLengthInput.value = this.value;
@@ -78,33 +135,15 @@ const generatePassword = () => {
 // one word
 // queryURL = `https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=noun&minLength=5&maxLength=5&api_key=`
 
-// I can confirm whether to include verbs, nouns, and the frequency of words (wordnik option)
 // when all prompts are answered
-// a username is generated with the matching criteria
 
 const generateUsername = () => {
 
-    // check the options selected by the user to use for generating the username
-
-    if (verbInput.checked) {
-        partOfSpeech = 'verb';
-    } else {
-        partOfSpeech = 'noun';
-    }
-
-    if (commonWordInput.checked) {
-        minimumWordFrequency = '1000';
-    } else {
-        minimumWordFrequency = '100';
-    }
-
-}
-
-const pullRandomWords = () => {
-
-    // array of objects of words
+    // array of objects of words, only retrieving limit = 2 words for now
     queryURL = `https://api.wordnik.com/v4/words.json/randomWords?hasDictionaryDef=true&includePartOfSpeech=${partOfSpeech}&minCorpusCount=${minimumWordFrequency}&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=3&maxLength=15&limit=2&api_key=`
 
+    initUsernameSettings();
+    
 
     fetch(queryURL).then(response =>
         response.json().then(data => ({
@@ -128,11 +167,28 @@ const pullRandomWords = () => {
         }));
 }
 
+const initUsernameSettings = () => {
+    // check the options selected by the user to use for generating the username
+    // I can confirm whether to include verbs, nouns, and the dictionary frequency of words (wordnik option)
+    if (verbInput.checked) {
+        partOfSpeech = 'verb';
+    } else {
+        partOfSpeech = 'noun';
+    }
+
+    if (commonWordInput.checked) {
+        minimumWordFrequency = '1000';
+    } else {
+        minimumWordFrequency = '100';
+    }
+}
+
+// I am able to press the button and generate both at the same time
+generateUsername();
+generatePassword();
 
 // grab existing scores from storage
 const namePass = JSON.parse(localStorage.getItem(`namePass`));
-
-
 
 // dynamically add all highscores from storage + the new highscore to the screen
 for (var i = 0; i < namePass.length; i++) {
@@ -141,9 +197,6 @@ for (var i = 0; i < namePass.length; i++) {
         .addClass('btn btn-dark btn-rounded');//check md bootstrap
     namePassEl.append(namePassItem);
 }
-
-
-let userPass = {};
 
 function saveNamePass() {
     
