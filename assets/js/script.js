@@ -46,6 +46,9 @@ let possibleChars = [];
 let userPass = {};
 let nums = [];
 
+// buttons
+const saveButton = $("#btn-save"); // id="btn-save"
+
 // Initialize API parameters
 let partOfSpeech = 'verb';
 let minimumWordFrequency = '1000';
@@ -246,15 +249,15 @@ function saveNamePass() {
 
 // save button logic
 
-// saveButton.on('click', function () {
-//     let userName = $('textarea[name=Username]').val();
-//     let password = $('textarea[name=Password]').val();
-//     userPass = {
-//         'user': userName,
-//         'pass': password,
-//     };
-//     saveNamePass();
-// });
+ saveButton.on('click', function () {
+     let userName = $('textarea[name=Username]').val();
+     let password = $('textarea[name=Password]').val();
+     userPass = {
+         'user': userName,
+         'pass': password,
+     };
+     saveNamePass();
+ });
 
 // I am able to press the button and generate both at the same time
 // I have the option to save my username + password combo for later
