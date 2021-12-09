@@ -55,7 +55,7 @@
 
             <!-- Card -->
             <div class="card card-image"
-              style="background-image: url(https://mdbootstrap.com/img/Photos/Horizontal/Nature/6-col/img%20%2873%29.jpg);">
+              style="background: linear-gradient(to bottom right, #993366 20%, #33ccff 111%);">
               <div
                 class="text-white text-center d-flex justify-content-center align-items-center rgba-black-strong py-5 px-4 px-md-5 rounded">
                 <div>
@@ -64,13 +64,16 @@
                     <strong> Username Options</strong>
                   </h6>
                   <h3 class="py-3 font-weight-bold">
-                    <strong>Username Options Stuff</strong>
+                    <strong>Username Options</strong>
                   </h3>
                   <div>
                     <!-- Username Slider -->
-                    <label class="form-label" for="customRange1">Username Length</label>
-                    <h7 class="range">
-                      <input type="range" class="form-range" id="word-max" />
+                    <label class="form-label text-white" for="customRange1">Username Length:</label>
+                    <br />
+                    <span class="text-white font-weight-bold" id="name-length-value">8</span>
+                    <div class="range">
+                      <input type="range" class="form-range" id="word-max" min="6" max="30" step="2" value="8" />
+                    </div>
                   </div>
                   <p>Choose your username's features:</p>
                   <div class="form-check">
@@ -112,47 +115,50 @@
 
             <!-- Card -->
             <div class="card card-image"
-              style="background-image: url(https://mdbootstrap.com/img/Photos/Horizontal/Nature/6-col/img%20%2873%29.jpg);">
+              style="background: linear-gradient(to bottom right, #993366 20%, #33ccff 111%);">
               <div
                 class="text-white text-center d-flex justify-content-center align-items-center rgba-black-strong py-5 px-4 px-md-5 rounded">
                 <div>
                   <h6 class="pink-text">
                     <i class="fas fa-chart-pie"></i>
-                    <strong> Password Options</strong>
+                    <strong>Password Options</strong>
                   </h6>
                   <h3 class="py-3 font-weight-bold">
-                    <strong>Password Options Stuff</strong>
+                    <strong>Password Options</strong>
                   </h3>
                   <div>
                     <!-- Username Slider -->
-                    <label class="form-label" for="customRange1">Password Length</label>
-                    <h7 class="range">
-                      <input type="range" class="form-range" id="word-max" />
+                    <label class="form-label text-white" for="passLength">Password Length:</label>
+                    <br />
+                    <span class="text-white font-weight-bold" id="pass-length-value">32</span>
+                    <div class="range">
+                      <input type="range" class="form-range" id="passLength" min="8" max="128" />
+                    </div>
                   </div>
                   <!--Password Check Boxes -->
                   <p>Choose your password's features:</p>
                   <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="numbers" />
+                    <label class="form-check-label" for="flexCheckDefault">
+                      Include numbers
+                    </label>
+                  </div>
+                  <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="lowercase" />
                     <label class="form-check-label" for="flexCheckDefault">
-                      Lowercase
+                      Include lowercase
                     </label>
                   </div>
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="uppercase" />
                     <label class="form-check-label" for="flexCheckDefault">
-                      Uppercase
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="numbers" />
-                    <label class="form-check-label" for="flexCheckDefault">
-                      Numbers
+                      Include uppercase
                     </label>
                   </div>
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="special" />
                     <label class="form-check-label" for="flexCheckDefault">
-                      Special Characters
+                      Include special characters
                     </label>
                   </div>
                   </h7>

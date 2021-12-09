@@ -1,15 +1,12 @@
-// JavaScript logic
-
-// declare global vars
 // username options
+    // verbs and nouns are mutally exclusive
+    // common and uncommon words are mutually exclusive
 const verbInput = $('#verbs'); // id="verbs"
 const nounInput = $('#nouns'); // id="nouns"
-const maxWordLength = $('#word-max'); // id="word-max"
+const maxWordLengthSlider = $('#word-max'); // id="word-max"
 const commonWordInput = $('#common'); // id="common"
 const uncommonWordInput = $('#uncommon'); // id="uncommon"
-
-// verbs and nouns are mutally exclusive
-// common and uncommon words are mutually exclusive
+const nameLengthEl = $('#name-length-value'); // id="name-length"
 
 // password options
 const lowerInput = $('#lowercase'); // id="lowercase"
@@ -17,23 +14,27 @@ const upperInput = $('#uppercase'); // id="uppercase"
 const numInput = $('#numbers'); // id="numbers"
 const specialInput = $('#special'); // id="special"
 const passLengthSlider = $('#passLength'); // id="passLength"
+const passLengthEl = $('#pass-length-value'); // id="passLength"
 
-// Initialize necessary checkboxes so they are checked when the page loads.
-// default options are loaded for each, usernames and passwords
-verbInput.checked = true;
-commonWordInput.checked = true;
+// Initialize the necessary checkboxes so they are checked when the page loads.
+// default options are loaded for each:
+// username
+verbInput.attr('checked', true);
+commonWordInput.attr('checked', true);
 
-lowerInput.checked = true;
-upperInput.checked = true;
-numInput.checked = true;
-specialInput.checked = true;
+// password
+lowerInput.attr('checked', true);
+upperInput.attr('checked', true);
+numInput.attr('checked', true);
+specialInput.attr('checked', true);
 
-// Define UTF codes for allowed password characters
+// Define UTF codes representing the set of possible password characters per setting
 const lowerChars = [97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122];
 const upperChars = [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90];
 const numChars = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
 const specialChars = [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 58, 59, 60, 61, 62, 63, 64, 91, 92, 93, 94, 95, 96, 123, 124, 125, 126];
 
+// global arrays, objects, variables
 let possibleChars = [];
 let userPass = {};
 let nums = [];
@@ -42,6 +43,40 @@ let nums = [];
 let partOfSpeech = 'verb';
 let minimumWordFrequency = '1000';
 
+// Set the input (checkbox) values so they remain mutally exclusive
+$('input:checkbox').change(
+    function () {
+
+        if ($(this).attr('id') === 'verbs' && nounInput.is(':checked')) {
+            nounInput.prop('checked', false);
+        } else if ($(this).attr('id') === 'nouns' && verbInput.is(':checked')) {
+            verbInput.prop('checked', false);
+        } else if ($(this).attr('id') === 'verbs' && !nounInput.is(':checked')) {
+            $(this).prop('checked', true);
+        } else if ($(this).attr('id') === 'nouns' && !verbInput.is(':checked')) {
+            $(this).prop('checked', true);
+        }
+
+        if ($(this).attr('id') === 'common' && uncommonWordInput.is(':checked')) {
+            uncommonWordInput.prop('checked', false);
+        } else if ($(this).attr('id') === 'uncommon' && commonWordInput.is(':checked')) {
+            commonWordInput.prop('checked', false);
+        } else if ($(this).attr('id') === 'common' && !uncommonWordInput.is(':checked')) {
+            $(this).prop('checked', true);
+        } else if ($(this).attr('id') === 'uncommon' && !commonWordInput.is(':checked')) {
+            $(this).prop('checked', true);
+        }
+    });
+
+passLengthSlider.on('input', () => {
+    passLengthEl.text(passLengthSlider.val());
+});
+
+maxWordLengthSlider.on('input', () => {
+    nameLengthEl.text(maxWordLengthSlider.val());
+});
+
+// monkey-proof generation options, reject if no option is chosen
 const validatePassInput = () => {
     // I confirm whether or not to include lowercase, uppercase, numeric, and/or special characters
     // my input should be validated and at least one character type should be selected
@@ -53,15 +88,28 @@ const validatePassInput = () => {
     }
 }
 
+const initPassSettings = () => {
+
+    if (lowerInput.checked) {
+        possibleChars = possibleChars.concat(lowerChars);
+    } else if (upperInput.checked) {
+        possibleChars = possibleChars.concat(upperChars);
+    } else if (numInput.checked) {
+        possibleChars = possibleChars.concat(numInput);
+    } else if (specialInput.checked) {
+        possibleChars = possibleChars.concat(specialChars);
+    }
+}
+
 const generatePassword = () => {
 
     // Choose password length 8-128 characters
-    let passLength = 64; // passLengthSlider.value;
+    let passLength = passLengthSlider.value;
     let passText = $('#pw-text'); // id="pw-text"
     let newChar = '';
     let nextChar = '';
     let myString = '';
-    
+
     passText.innerHTML = '';
     possibleChars = [];
     nums = [];
@@ -95,19 +143,6 @@ const generatePassword = () => {
 
 }
 
-const initPassSettings = () => {
-
-    if (lowerInput.checked) {
-        possibleChars = possibleChars.concat(lowerChars);
-    } else if (upperInput.checked) {
-        possibleChars = possibleChars.concat(upperChars);
-    } else if (numInput.checked) {
-        possibleChars = possibleChars.concat(numInput);
-    } else if (specialInput.checked) {
-        possibleChars = possibleChars.concat(specialChars);
-    }
-}
-
 // and displayed on the page
 
 // I need a new username
@@ -137,13 +172,28 @@ const initPassSettings = () => {
 
 // when all prompts are answered
 
+const initUsernameSettings = () => {
+    // check the options selected by the user to use for generating the username
+    // I can confirm whether to include verbs, nouns, and the dictionary frequency of words (wordnik option)
+    if (verbInput.checked) {
+        partOfSpeech = 'verb';
+    } else {
+        partOfSpeech = 'noun';
+    }
+
+    if (commonWordInput.checked) {
+        minimumWordFrequency = '1000';
+    } else {
+        minimumWordFrequency = '100';
+    }
+}
+
 const generateUsername = () => {
 
     // array of objects of words, only retrieving limit = 2 words for now
     queryURL = `https://api.wordnik.com/v4/words.json/randomWords?hasDictionaryDef=true&includePartOfSpeech=${partOfSpeech}&minCorpusCount=${minimumWordFrequency}&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=3&maxLength=15&limit=2&api_key=`
 
     initUsernameSettings();
-    
 
     fetch(queryURL).then(response =>
         response.json().then(data => ({
@@ -167,28 +217,12 @@ const generateUsername = () => {
         }));
 }
 
-const initUsernameSettings = () => {
-    // check the options selected by the user to use for generating the username
-    // I can confirm whether to include verbs, nouns, and the dictionary frequency of words (wordnik option)
-    if (verbInput.checked) {
-        partOfSpeech = 'verb';
-    } else {
-        partOfSpeech = 'noun';
-    }
-
-    if (commonWordInput.checked) {
-        minimumWordFrequency = '1000';
-    } else {
-        minimumWordFrequency = '100';
-    }
-}
-
 // I am able to press the button and generate both at the same time
-generateUsername();
-generatePassword();
+// generateUsername();
+// generatePassword();
 
 function saveNamePass() {
-    
+
     let namePass = JSON.parse(localStorage.getItem(`namePass`) || "[]");
     namePass.push(userPass);
     localStorage.setItem(`namePass`, JSON.stringify(namePass));
