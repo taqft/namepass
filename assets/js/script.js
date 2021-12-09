@@ -22,6 +22,7 @@ const userCopyButton = $('#user-copy'); // id="user-copy"
 const passGenerateButton = $('#pass-generate'); // id="pass-generate"
 const passCopyButton = $('#pass-copy'); // id="pass-copy"
 const bothGenerateButton = $('#both-generate'); // id="both-generate"
+const saveButton = $("#btn-save"); // id="btn-save"
 
 // Initialize the necessary checkboxes so they are checked when the page loads.
 // default options are loaded for each:
@@ -45,9 +46,8 @@ const specialChars = [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46
 let possibleChars = [];
 let userPass = {};
 let nums = [];
-
-// buttons
-const saveButton = $("#btn-save"); // id="btn-save"
+let generatePassActive = true;
+let generateUserActive = true;
 
 // Initialize API parameters
 let partOfSpeech = 'verb';
@@ -100,6 +100,7 @@ const validatePassInput = () => {
 }
 
 const initPassSettings = () => {
+
     if (lowerInput.is(':checked')) {
         possibleChars = possibleChars.concat(lowerChars);
     }
@@ -124,7 +125,7 @@ const generatePassword = () => {
     let newChar = '';
     let nextChar = '';
 
-    passTextBox.html('');
+    passTextBox.html('Loading...');
     possibleChars = [];
     nums = [];
 
@@ -144,6 +145,7 @@ const generatePassword = () => {
                 nums = res.data.split('\n');
 
                 // console.log(nums);
+                passTextBox.html('');
 
                 // a password is generated that matches the selected criteria
                 for (let i = 0; i < passLength; i++) {
@@ -151,9 +153,11 @@ const generatePassword = () => {
                     newChar = String.fromCharCode(possibleChars[nextChar]);
                     passTextBox.append(newChar);
                 }
+
+                generatePassActive = true;
             }
         })
-    });
+    })
 
 }
 
@@ -208,10 +212,12 @@ const generateUsername = () => {
     let wordLength = nameLength / 2;
     let nameTextBox = $('#username');
 
-     initUsernameSettings();
+    nameTextBox.html('Loading...');
+
+    initUsernameSettings();
 
     // array of objects of words, only retrieving limit = 2 words for now
-    queryURL = `https://api.wordnik.com/v4/words.json/randomWords?hasDictionaryDef=true&minCorpusCount=${minimumWordFrequency}&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=${wordLength}&maxLength=${wordLength}&limit=2&api_key=uno3kb56e0lo7ns6jrd19g1s1cvw2huvtluuyuv41zijilvfu`
+    queryURL = `https://api.wordnik.com/v4/words.json/randomWords?hasDictionaryDef=true&includePartOfSpeech=${partOfSpeech}&minCorpusCount=${minimumWordFrequency}&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=${wordLength}&maxLength=${wordLength}&limit=2&api_key=uno3kb56e0lo7ns6jrd19g1s1cvw2huvtluuyuv41zijilvfu`
 
     fetch(queryURL).then(response =>
         response.json().then(data => ({
@@ -228,6 +234,7 @@ const generateUsername = () => {
                 let newUsername = firstWord + secondWord;
 
                 nameTextBox.html(newUsername);
+                generateUserActive = true;
 
             } else {
                 console.log(`An error occurred. Status: ${res.status}`);
@@ -249,15 +256,15 @@ function saveNamePass() {
 
 // save button logic
 
- saveButton.on('click', function () {
-     let userName = $('textarea[name=Username]').val();
-     let password = $('textarea[name=Password]').val();
-     userPass = {
-         'user': userName,
-         'pass': password,
-     };
-     saveNamePass();
- });
+saveButton.on('click', function () {
+    let userName = $('textarea[name=Username]').val();
+    let password = $('textarea[name=Password]').val();
+    userPass = {
+        'user': userName,
+        'pass': password,
+    };
+    saveNamePass();
+});
 
 // I am able to press the button and generate both at the same time
 // I have the option to save my username + password combo for later
@@ -271,11 +278,10 @@ function saveNamePass() {
 
 passGenerateButton.on('click', validatePassInput);
 userGenerateButton.on('click', generateUsername);
-
 bothGenerateButton.on('click', () => {
-    validatePassInput();
-    generateUsername();
-});
+        generateUsername();
+        validatePassInput();
+    });
 // when the saved info page is opened
 // then the usernames and passwords from storage are loaded
 // when the clear everything button is pressed, all saved data is deleted
