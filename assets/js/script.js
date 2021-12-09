@@ -99,6 +99,7 @@ const validatePassInput = () => {
     }
 }
 
+// initialize the possibleChars array to prep for password generation
 const initPassSettings = () => {
 
     if (lowerInput.is(':checked')) {
@@ -155,40 +156,22 @@ const generatePassword = () => {
                 }
 
                 generatePassActive = true;
+            } else if (res.status === 503) {
+                passTextBox.html(`An error occurred. Check console.`);
+                console.log(`An error occurred: Either the random.org service is unavailable or the free quota has been reached for the day.`);
+            } else {
+                passTextBox.html(`An error occurred. Check console.`);
+                console.log(`An error occurred: ${res.status}`);
             }
         })
     })
 
 }
 
-// and displayed on the page
-
-// I need a new username
-// I am presented with a series of prompts for username criteria
-// I select the criteria for my username
-// I am able to select a maximum length of username between 3 and 30
-// TODO: multiple words? How are usernames constructed based on user input
-
 // BONUS: add input box that corresponds with slider values
 // let maxWordLengthSlider = document.getElementById("word-length-slider"); // id="word-length-slider"
 // let maxWordLengthInput = document.getElementById("word-length-input"); // id="word-length-input"
 // maxWordLengthInput.value = maxWordLengthSlider.value;
-
-// let the input value follow the slider value and vice-versa
-// // Set the input value to the slider value
-// maxWordLengthSlider.oninput = () => {
-//     maxWordLengthInput.value = this.value;
-// }
-
-// // Set the slider value to the input value
-// maxWordLengthInput.oninput = () => {
-//     maxWordLengthSlider.value = this.value;
-// }
-
-// one word
-// queryURL = `https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=noun&minLength=5&maxLength=5&api_key=`
-
-// when all prompts are answered
 
 const initUsernameSettings = () => {
     // check the options selected by the user to use for generating the username
@@ -224,7 +207,7 @@ const generateUsername = () => {
             data: data,
             status: response.status
         })).then(res => {
-            if (res.status === 200) {
+            if (res.status === 200 && res.data.length === 2) {
 
                 // console.log(`Status: ${res.status} OK`);
                 // console.log(res.data);
@@ -234,18 +217,18 @@ const generateUsername = () => {
                 let newUsername = firstWord + secondWord;
 
                 nameTextBox.html(newUsername);
-                generateUserActive = true;
 
+            } else if (res.data.length !== 2) {
+                nameTextBox.html(`An error occurred. Check console.`);
+                console.log(`An error occurred: The wordnik API did not return a second word for some reason.`);
             } else {
-                console.log(`An error occurred. Status: ${res.status}`);
+                nameTextBox.html(`An error occurred. Check console.`);
+                console.log(`An error occurred: ${res.status}`);
             }
         }));
 }
 
-// I am able to press the button and generate both at the same time
-// generateUsername();
-// generatePassword();
-
+// I have the option to save my username + password combo for later
 function saveNamePass() {
 
     let namePass = JSON.parse(localStorage.getItem(`namePass`) || "[]");
@@ -255,8 +238,7 @@ function saveNamePass() {
 }
 
 // save button logic
-
-saveButton.on('click', function () {
+saveButton.on('click', () => {
     let userName = $('textarea[name=Username]').val();
     let password = $('textarea[name=Password]').val();
     userPass = {
@@ -266,22 +248,27 @@ saveButton.on('click', function () {
     saveNamePass();
 });
 
-// I am able to press the button and generate both at the same time
-// I have the option to save my username + password combo for later
-// When I press save, at least one is saved of username and password
-// one is required to be saved, but both are not required
-// and my info is saved in localStorage
-// When I click the button for my saved usernames an passwords
-// Then I am redirected to the saved info page
-// When I click the back button
-// Then I am taken to the homepage
-
 passGenerateButton.on('click', validatePassInput);
 userGenerateButton.on('click', generateUsername);
+// I am able to press the button and generate both at the same time
 bothGenerateButton.on('click', () => {
-        generateUsername();
-        validatePassInput();
-    });
-// when the saved info page is opened
-// then the usernames and passwords from storage are loaded
-// when the clear everything button is pressed, all saved data is deleted
+    generateUsername();
+    validatePassInput();
+});
+
+userCopyButton.on('click', () => {
+    let copyText = $("#username");
+
+    $(copyText).focus();
+    $(copyText).select();
+
+    navigator.clipboard.writeText(copyText.html());
+})
+passCopyButton.on('click', () => {
+    let copyText = $('#password');
+
+    $(copyText).focus();
+    $(copyText).select();
+
+    navigator.clipboard.writeText(copyText.html());
+})

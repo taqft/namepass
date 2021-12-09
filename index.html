@@ -18,7 +18,7 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">NamePass</a>
+      <a class="navbar-brand" href="index.html">NamePass</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -187,8 +187,7 @@
         <div class="col-md-6 mb-4">
 
           <!-- Card -->
-          <div class="card card-image"
-            style="background: linear-gradient(to bottom right, #000099 5%, #66ccff 129%);">
+          <div class="card card-image" style="background: linear-gradient(to bottom right, #000099 5%, #66ccff 129%);">
             <div
               class="text-white text-center d-flex justify-content-center align-items-center rgba-black-strong py-5 px-4 px-md-5 rounded">
               <div>
@@ -199,14 +198,14 @@
                 <h3 class="py-3 font-weight-bold">
                   <strong>New Username</strong>
                 </h3>
-                <textarea readonly id="username" placeholder="Your New Username..." aria-label="Generated Username"
-                  style="height: 100px;"></textarea>
+                <textarea readonly id="username" name="Username" placeholder=" Your New Username..."
+                  aria-label="Generated Username" style="height: 100px;"></textarea>
                 <a class="btn btn-black btn-rounded btn-md" id="user-generate" style="font-size: 1.05em;"><i
                     class="fas fa-chart-pie"></i>
                   Generate</a>
                 <div>
                   <br />
-                  <a class="btn btn-black btn-rounded btn-sm" style="font-size: 1.05em;"><i
+                  <a class="btn btn-black btn-rounded btn-sm" id="user-copy" style="font-size: 1.05em;"><i
                       class="fas fa-clone left"></i> Copy</a>
                 </div>
               </div>
@@ -222,8 +221,7 @@
         <div class="col-md-6 mb-4">
 
           <!-- Card -->
-          <div class="card card-image"
-            style="background: linear-gradient(to bottom right, #000099 5%, #66ccff 129%);">
+          <div class="card card-image" style="background: linear-gradient(to bottom right, #000099 5%, #66ccff 129%);">
             <div
               class="text-white text-center d-flex justify-content-center align-items-center rgba-black-strong py-5 px-4 px-md-5 rounded">
               <div>
@@ -234,13 +232,13 @@
                 <h3 class="py-3 font-weight-bold">
                   <strong>New Password</strong>
                 </h3>
-                <textarea readonly id="password" placeholder="Your Secure Password..." aria-label="Generated Password"
-                  style="height: 100px; font-size: 0.96em;"></textarea>
+                <textarea readonly id="password" name="Password" placeholder="Your Secure Password..."
+                  aria-label="Generated Password" style="height: 100px; font-size: 0.96em;"></textarea>
                 <a class="btn btn-black btn-rounded btn-md" id="pass-generate" style="font-size: 1.05em;"><i
                     class="fas fa-chart-pie"></i> Generate</a>
                 <div>
                   <br />
-                  <a class="btn btn-black btn-rounded btn-sm" style="font-size: 1.05em;"><i
+                  <a class="btn btn-black btn-rounded btn-sm" id="pass-copy" style="font-size: 1.05em;"><i
                       class="fas fa-clone left"></i> Copy</a>
                 </div>
               </div>
@@ -253,11 +251,11 @@
           class="text-white text-center d-flex justify-content-center align-items-center rgba-black-strong py-4 px-4 px-md-5 rounded">
           <div>
             <a class="btn btn-black btn-rounded btn-md" id="both-generate" style="font-size: 1.05em;"><i
-                class="fas fa-clone"></i> Generate
+                class="fas fa-chart-pie"></i> Generate
               Both</a>
             <br /><br />
             <a class="btn btn-black btn-rounded btn-md" id="btn-save" style="font-size: 1.05em;"><i
-                class="fas fa-clone"></i> Save</a>
+                class="fa fa-save"></i> Save</a>
           </div>
         </div>
 
