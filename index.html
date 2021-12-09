@@ -73,7 +73,7 @@
                     <br />
                     <span class="text-white font-weight-bold" id="name-length-value">8</span>
                     <div class="range">
-                      <input type="range" class="form-range" id="word-max" min="6" max="30" step="2" value="8" />
+                      <input type="range" class="form-range" id="name-max" min="6" max="30" step="2" value="8" />
                     </div>
                   </div>
                   <p>Choose your username's features:</p>
@@ -198,20 +198,20 @@
           <!-- Card -->
           <div class="card card-image"
             style="background-image: url(https://mdbootstrap.com/img/Photos/Horizontal/City/6-col/img%20%2847%29.jpg);">
-            <div class="text-white text-center d-flex align-items-center rgba-black-strong py-5 px-4 px-md-5 rounded">
+            <div
+              class="text-white text-center d-flex justify-content-center align-items-center rgba-black-strong py-5 px-4 px-md-5 rounded">
               <div>
                 <h6 class="green-text">
                   <i class="fas fa-eye"></i>
-                  <strong> Username</strong>
+                  <strong>Username</strong>
                 </h6>
                 <h3 class="py-3 font-weight-bold">
-                  <strong>This is card title</strong>
+                  <strong>New Username</strong>
                 </h3>
-                <p class="pb-3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat fugiat,
-                  laboriosam, voluptatem, optio vero odio nam sit officia accusamus minus error nisi architecto
-                  nulla ipsum dignissimos. Odit sed qui, dolorum!
-                </p>
-                <a class="btn btn-black btn-rounded btn-md"><i class="fas fa-clone left"></i> Generate</a>
+                <textarea readonly id="username" placeholder="Your New Username..."
+                  aria-label="Generated Username" style="height: 120px;"></textarea>
+                <a class="btn btn-black btn-rounded btn-md" id="user-generate"><i class="fas fa-clone left"></i>
+                  Generate</a>
                 <div>
                   <br>
                   <a class="btn btn-black btn-rounded btn-sm"><i class="fas fa-clone left"></i> Copy</a>
@@ -231,20 +231,19 @@
           <!-- Card -->
           <div class="card card-image"
             style="background-image: url(https://mdbootstrap.com/img/Photos/Horizontal/City/6-col/img%20%2847%29.jpg);">
-            <div class="text-white text-center d-flex align-items-center rgba-black-strong py-5 px-4 px-md-5 rounded">
+            <div
+              class="text-white text-center d-flex justify-content-center align-items-center rgba-black-strong py-5 px-4 px-md-5 rounded">
               <div>
                 <h6 class="green-text">
                   <i class="fas fa-eye"></i>
                   <strong> Password</strong>
                 </h6>
                 <h3 class="py-3 font-weight-bold">
-                  <strong>This is card title</strong>
+                  <strong>New Password</strong>
                 </h3>
-                <p class="pb-3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat fugiat,
-                  laboriosam, voluptatem, optio vero odio nam sit officia accusamus minus error nisi architecto
-                  nulla ipsum dignissimos. Odit sed qui, dolorum!
-                </p>
-                <a class="btn btn-black btn-rounded btn-md"><i class="fas fa-clone left"></i> Generate</a>
+                <textarea readonly id="password" placeholder="Your Secure Password..."
+                  aria-label="Generated Password" style="height: 120px;"></textarea>
+                <a class="btn btn-black btn-rounded btn-md" id="pass-generate"><i class="fas fa-clone left"></i> Generate</a>
                 <div>
                   <br>
                   <a class="btn btn-black btn-rounded btn-sm"><i class="fas fa-clone left"></i> Copy</a>
@@ -257,7 +256,8 @@
 
         <div class="text-white text-center d-flex justify-content-center align-items-center rgba-black-strong py-5 px-4 px-md-5 rounded">
           <div>
-            <a class="btn btn-black btn-rounded btn-md"><i class="fas fa-clone"></i> Generate Both</a>
+            <a class="btn btn-black btn-rounded btn-md" id="both-generate"><i class="fas fa-clone"></i> Generate
+              Both</a>
             <a class="btn btn-black btn-rounded btn-md" id="btn-save"><i class="fas fa-clone"></i> Save</a>
           </div>
           </div>
