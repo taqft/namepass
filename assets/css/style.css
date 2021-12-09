@@ -5,10 +5,28 @@ body {
 }
 
 .btn:hover {
-color:aqua;
+    color: aqua;
+    cursor: pointer;
 }
 
-#password, #username {
+li.btn {
+    -webkit-touch-callout: inherit;
+    /* iOS Safari */
+    -webkit-user-select: inherit;
+    /* Safari */
+    -khtml-user-select: inherit;
+    /* Konqueror HTML */
+    -moz-user-select: inherit;
+    /* Old versions of Firefox */
+    -ms-user-select: inherit;
+    /* Internet Explorer/Edge */
+    user-select: inherit;
+    /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+#password,
+#username {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
