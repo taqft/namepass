@@ -3,7 +3,7 @@
 // common and uncommon words are mutually exclusive
 const verbInput = $('#verbs'); // id="verbs"
 const nounInput = $('#nouns'); // id="nouns"
-const maxWordLengthSlider = $('#word-max'); // id="word-max"
+const nameLengthSlider = $('#name-max'); // id="word-max"
 const commonWordInput = $('#common'); // id="common"
 const uncommonWordInput = $('#uncommon'); // id="uncommon"
 const nameLengthEl = $('#name-length-value'); // id="name-length"
@@ -15,6 +15,13 @@ const numInput = $('#numbers'); // id="numbers"
 const specialInput = $('#special'); // id="special"
 const passLengthSlider = $('#passLength'); // id="passLength"
 const passLengthEl = $('#pass-length-value'); // id="passLength"
+
+// buttons and text boxes
+const userGenerateButton = $('#user-generate'); // id="user-generate"
+const userCopyButton = $('#user-copy'); // id="user-copy"
+const passGenerateButton = $('#pass-generate'); // id="pass-generate"
+const passCopyButton = $('#pass-copy'); // id="pass-copy"
+const bothGenerateButton = $('#both-generate'); // id="both-generate"
 
 // Initialize the necessary checkboxes so they are checked when the page loads.
 // default options are loaded for each:
@@ -38,9 +45,6 @@ const specialChars = [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46
 let possibleChars = [];
 let userPass = {};
 let nums = [];
-
-// buttons
-// $("#btn-save")
 
 // Initialize API parameters
 let partOfSpeech = 'verb';
@@ -76,15 +80,15 @@ passLengthSlider.on('input', () => {
     passLengthEl.text(passLengthSlider.val());
 });
 
-maxWordLengthSlider.on('input', () => {
-    nameLengthEl.text(maxWordLengthSlider.val());
+nameLengthSlider.on('input', () => {
+    nameLengthEl.text(nameLengthSlider.val());
 });
 
 // monkey-proof generation options, reject if no option is chosen
 const validatePassInput = () => {
     // I confirm whether or not to include lowercase, uppercase, numeric, and/or special characters
     // my input should be validated and at least one character type should be selected
-    if (lowerInput.checked || upperInput.checked || numInput.checked || specialInput.checked) {
+    if (lowerInput.is(':checked') || upperInput.is(':checked') || numInput.is(':checked') || specialInput.is(':checked')) {
         generatePassword();
     } else {
         alert("Please select an option.")
@@ -93,63 +97,60 @@ const validatePassInput = () => {
 }
 
 const initPassSettings = () => {
-
-    if (lowerInput.checked) {
+    if (lowerInput.is(':checked')) {
         possibleChars = possibleChars.concat(lowerChars);
-    } else if (upperInput.checked) {
+    }
+    if (upperInput.is(':checked')) {
         possibleChars = possibleChars.concat(upperChars);
-    } else if (numInput.checked) {
-        possibleChars = possibleChars.concat(numInput);
-    } else if (specialInput.checked) {
+    }
+    if (numInput.is(':checked')) {
+        possibleChars = possibleChars.concat(numChars);
+    }
+    if (specialInput.is(':checked')) {
         possibleChars = possibleChars.concat(specialChars);
     }
 }
 
+// Choose password length 8-128 characters
+let passLength = passLengthSlider.value;
 const generatePassword = () => {
 
     // Choose password length 8-128 characters
-    let passLength = passLengthSlider.value;
-    const generatePassword = () => {
+    let passLength = passLengthSlider.val();
+    let passTextBox = $('#password');
+    let newChar = '';
+    let nextChar = '';
 
-        // Choose password length 8-128 characters
-        let passLength = 64; // passLengthSlider.value;
-        let passText = $('#pw-text'); // id="pw-text"
-        let newChar = '';
-        let nextChar = '';
-        let myString = '';
+    passTextBox.html('');
+    possibleChars = [];
+    nums = [];
 
-        passText.innerHTML = '';
-        possibleChars = [];
-        nums = [];
+    initPassSettings();
 
-        initPassSettings();
+    let queryURL = `https://www.random.org/decimal-fractions/?num=${passLength}&dec=20&col=1&format=plain&rnd=new`;
 
-        let queryURL = `https://www.random.org/decimal-fractions/?num=${passLength}&dec=20&col=1&format=plain&rnd=new`;
+    fetch(queryURL).then(response => {
+        response.text().then(data => ({
+            data: data,
+            status: response.status
+        })).then(res => {
+            if (res.status === 200) {
+                // console.log(`Status: ${res.status} OK`);
+                // console.log(res.data);
 
-        fetch(queryURL).then(response => {
-            response.text().then(data => ({
-                data: data,
-                status: response.status
-            })).then(res => {
-                if (res.status === 200) {
-                    console.log(`Status: ${res.status} OK`);
-                    console.log(res.data);
-                    nums = res.data.split('\n');
-                    console.log(nums);
+                nums = res.data.split('\n');
 
-                    // a password is generated that matches the selected criteria
-                    for (let i = 0; i < passLength; i++) {
-                        nextChar = Math.floor(nums[i] * (possibleChars.length - 1));
-                        newChar = String.fromCharCode(possibleChars[nextChar]);
-                        myString += newChar;
-                    }
+                // console.log(nums);
 
-                    console.log(myString);
+                // a password is generated that matches the selected criteria
+                for (let i = 0; i < passLength; i++) {
+                    nextChar = Math.floor(nums[i] * (possibleChars.length - 1));
+                    newChar = String.fromCharCode(possibleChars[nextChar]);
+                    passTextBox.append(newChar);
                 }
-            })
-        });
-
-    }
+            }
+        })
+    });
 
 }
 
@@ -185,13 +186,13 @@ const generatePassword = () => {
 const initUsernameSettings = () => {
     // check the options selected by the user to use for generating the username
     // I can confirm whether to include verbs, nouns, and the dictionary frequency of words (wordnik option)
-    if (verbInput.checked) {
+    if (verbInput.is(':checked')) {
         partOfSpeech = 'verb';
     } else {
         partOfSpeech = 'noun';
     }
 
-    if (commonWordInput.checked) {
+    if (commonWordInput.is(':checked')) {
         minimumWordFrequency = '1000';
     } else {
         minimumWordFrequency = '100';
@@ -200,10 +201,14 @@ const initUsernameSettings = () => {
 
 const generateUsername = () => {
 
-    // array of objects of words, only retrieving limit = 2 words for now
-    queryURL = `https://api.wordnik.com/v4/words.json/randomWords?hasDictionaryDef=true&includePartOfSpeech=${partOfSpeech}&minCorpusCount=${minimumWordFrequency}&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=3&maxLength=15&limit=2&api_key=`
+    let nameLength = nameLengthSlider.val();
+    let wordLength = nameLength / 2;
+    let nameTextBox = $('#username');
 
-    initUsernameSettings();
+     initUsernameSettings();
+
+    // array of objects of words, only retrieving limit = 2 words for now
+    queryURL = `https://api.wordnik.com/v4/words.json/randomWords?hasDictionaryDef=true&minCorpusCount=${minimumWordFrequency}&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=${wordLength}&maxLength=${wordLength}&limit=2&api_key=uno3kb56e0lo7ns6jrd19g1s1cvw2huvtluuyuv41zijilvfu`
 
     fetch(queryURL).then(response =>
         response.json().then(data => ({
@@ -212,14 +217,14 @@ const generateUsername = () => {
         })).then(res => {
             if (res.status === 200) {
 
-                console.log(`Status: ${res.status} OK`);
-                console.log(res.data);
+                // console.log(`Status: ${res.status} OK`);
+                // console.log(res.data);
 
                 let firstWord = res.data[0].word;
                 let secondWord = res.data[1].word;
                 let newUsername = firstWord + secondWord;
 
-                console.log(newUsername);
+                nameTextBox.html(newUsername);
 
             } else {
                 console.log(`An error occurred. Status: ${res.status}`);
@@ -229,7 +234,7 @@ const generateUsername = () => {
 
 // I am able to press the button and generate both at the same time
 // generateUsername();
-generatePassword();
+// generatePassword();
 
 function saveNamePass() {
 
@@ -261,7 +266,13 @@ function saveNamePass() {
 // When I click the back button
 // Then I am taken to the homepage
 
+passGenerateButton.on('click', validatePassInput);
+userGenerateButton.on('click', generateUsername);
 
+bothGenerateButton.on('click', () => {
+    validatePassInput();
+    generateUsername();
+});
 // when the saved info page is opened
 // then the usernames and passwords from storage are loaded
 // when the clear everything button is pressed, all saved data is deleted
