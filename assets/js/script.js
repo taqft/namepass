@@ -1,6 +1,6 @@
 // username options
-    // verbs and nouns are mutally exclusive
-    // common and uncommon words are mutually exclusive
+// verbs and nouns are mutally exclusive
+// common and uncommon words are mutually exclusive
 const verbInput = $('#verbs'); // id="verbs"
 const nounInput = $('#nouns'); // id="nouns"
 const maxWordLengthSlider = $('#word-max'); // id="word-max"
