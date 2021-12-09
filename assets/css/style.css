@@ -1,4 +1,9 @@
 /* styles */
+html,
+body {
+    height: 100%;
+}
+
 .btn:hover {
 color:aqua;
 }
