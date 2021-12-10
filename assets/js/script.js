@@ -200,7 +200,7 @@ const generateUsername = () => {
     initUsernameSettings();
 
     // array of objects of words, only retrieving limit = 2 words for now
-    queryURL = `https://api.wordnik.com/v4/words.json/randomWords?hasDictionaryDef=true&includePartOfSpeech=${partOfSpeech}&minCorpusCount=${minimumWordFrequency}&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=${wordLength}&maxLength=${wordLength}&limit=2&api_key=uno3kb56e0lo7ns6jrd19g1s1cvw2huvtluuyuv41zijilvfu`
+    queryURL = `https://api.wordnik.com/v4/words.json/randomWords?includePartOfSpeech=${partOfSpeech}&minCorpusCount=${minimumWordFrequency}&maxCorpusCount=-1&minLength=${wordLength}&maxLength=${wordLength}&limit=2&api_key=uno3kb56e0lo7ns6jrd19g1s1cvw2huvtluuyuv41zijilvfu`
 
     fetch(queryURL).then(response =>
         response.json().then(data => ({
