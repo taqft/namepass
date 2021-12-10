@@ -16,9 +16,7 @@ for (let i = 0; i < namePass.length; i++) {
         .addClass('btn btn-rounded text-white my-1')
         .attr('style', "background: linear-gradient(to bottom right, #000099 5%, #66ccff 129%");
     namePassEl.append(namePassItem);
-    namePassEl.append($('<br />'));
     namePassEl.append(passNameItem);
-    namePassEl.append($('<br />'));
 }
 
 // when the clear everything button is pressed, all saved data is deleted and the page is refreshed
