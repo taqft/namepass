@@ -28,7 +28,7 @@ const saveButton = $("#btn-save"); // id="btn-save"
 // default options are loaded for each:
 // username
 verbInput.attr('checked', true);
-commonWordInput.attr('checked', true);
+uncommonWordInput.attr('checked', true);
 
 // password
 lowerInput.attr('checked', true);
@@ -51,7 +51,7 @@ let generateUserActive = true;
 
 // Initialize API parameters
 let partOfSpeech = 'verb';
-let minimumWordFrequency = '1000';
+let minimumWordFrequency = '10';
 
 // Set the input (checkbox) values so they remain mutally exclusive
 $('input:checkbox').change(
@@ -183,9 +183,9 @@ const initUsernameSettings = () => {
     }
 
     if (commonWordInput.is(':checked')) {
-        minimumWordFrequency = '1000';
+        minimumWordFrequency = '10';
     } else {
-        minimumWordFrequency = '100';
+        minimumWordFrequency = '0';
     }
 }
 
@@ -207,23 +207,34 @@ const generateUsername = () => {
             data: data,
             status: response.status
         })).then(res => {
-            if (res.status === 200 && res.data.length === 2) {
-
-                // console.log(`Status: ${res.status} OK`);
-                // console.log(res.data);
-
+            console.log(res);
+            if (res.status === 429) {
+                nameTextBox.html(`Error: Too many requests!
+Please wait a few seconds
+and try again.`);
+                console.log(`${res.status}: ${res.message}`);
+            }
+            else if (res.status === 200 && res.data.length === 2) {
+                console.log(`Status: ${res.status} OK`);
+                console.log(res.data);
                 let firstWord = res.data[0].word;
                 let secondWord = res.data[1].word;
                 let newUsername = firstWord + secondWord;
-
                 nameTextBox.html(newUsername);
-
-            } else if (res.data.length !== 2) {
-                nameTextBox.html(`An error occurred. Check console.`);
-                console.log(`An error occurred: The wordnik API did not return a second word for some reason.`);
+            } else if (res.data.length == 1) {
+                console.log(`Status: ${res.status} OK`);
+                console.log(res.data);
+                let firstWord = res.data[0].word;
+                let newUsername = firstWord + firstWord;
+                nameTextBox.html(newUsername);
+            } else if (res.data.length !== 2 && res.data.length !== 1) {
+                nameTextBox.html(`An error occurred retrieving words.
+Please try again.`);
+                console.log(`An error occurred: The wordnik API did not return a word for the selected criteria.
+${res.status}: ${res.data.message}`);
             } else {
                 nameTextBox.html(`An error occurred. Check console.`);
-                console.log(`An error occurred: ${res.status}`);
+                console.log(`${res.status}: ${res.data.message}`);
             }
         }));
 }
