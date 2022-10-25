@@ -1,7 +1,7 @@
 // username options
 // verbs and nouns are mutally exclusive
 // common and uncommon words are mutually exclusive
-// edit: 'popular' and 'any' now used for word frequency selection 
+// edit: 'popular' and 'include uncommon' now used for word frequency selection 
 const verbInput = $('#verbs'); // id="verbs"
 const nounInput = $('#nouns'); // id="nouns"
 const nameLengthSlider = $('#name-max'); // id="word-max"
@@ -263,7 +263,8 @@ function saveNamePass() {
     let namePass = JSON.parse(localStorage.getItem(`namePass`) || "[]");
     namePass.push(userPass);
     localStorage.setItem(`namePass`, JSON.stringify(namePass));
-
+    saveButton.html(`Saved!`)
+    setTimeout(() => saveButton.html(`<i class="fa fa-save"></i> Save</a>`), 1200);
 }
 
 // save button logic
@@ -292,6 +293,8 @@ userCopyButton.on('click', () => {
     $(copyText).select();
 
     navigator.clipboard.writeText(copyText.html());
+    userCopyButton.html(`Copied!`)
+    setTimeout(() => userCopyButton.html(`<i class="fas fa-clone left"></i> Copy</a>`), 1200);
 })
 passCopyButton.on('click', () => {
     let copyText = $('#password');
@@ -300,4 +303,6 @@ passCopyButton.on('click', () => {
     $(copyText).select();
 
     navigator.clipboard.writeText(copyText.html());
+    passCopyButton.html(`Copied!`)
+    setTimeout(() => passCopyButton.html(`<i class="fas fa-clone left"></i> Copy</a>`), 1200);
 })
