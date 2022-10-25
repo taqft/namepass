@@ -1,6 +1,7 @@
 // username options
 // verbs and nouns are mutally exclusive
 // common and uncommon words are mutually exclusive
+// edit: 'popular' and 'any' now used for word frequency selection 
 const verbInput = $('#verbs'); // id="verbs"
 const nounInput = $('#nouns'); // id="nouns"
 const nameLengthSlider = $('#name-max'); // id="word-max"
@@ -30,7 +31,7 @@ const saveButton = $("#btn-save"); // id="btn-save"
 verbInput.attr('checked', true);
 uncommonWordInput.attr('checked', true);
 
-// password
+// and password
 lowerInput.attr('checked', true);
 upperInput.attr('checked', true);
 numInput.attr('checked', true);
@@ -46,10 +47,11 @@ const specialChars = [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46
 let possibleChars = [];
 let userPass = {};
 let nums = [];
+// TODO: ensure that generate buttons are not active while generation is in progress
 let generatePassActive = true;
 let generateUserActive = true;
 
-// Initialize API parameters
+// Initialize Wordnik API parameters
 let partOfSpeech = 'verb';
 let minimumWordFrequency = '10';
 
@@ -126,7 +128,10 @@ const generatePassword = () => {
     let newChar = '';
     let nextChar = '';
 
+    // Display 'loading' text to the user as feedback for the button click
     passTextBox.html('Loading...');
+    // Change the button to show the username is being generated
+    passGenerateButton.html('Generating...');
     possibleChars = [];
     nums = [];
 
@@ -144,8 +149,9 @@ const generatePassword = () => {
                 // console.log(res.data);
 
                 nums = res.data.split('\n');
-
                 // console.log(nums);
+
+                // clear the text box prior to generating the password
                 passTextBox.html('');
 
                 // a password is generated that matches the selected criteria
@@ -160,9 +166,13 @@ const generatePassword = () => {
                 passTextBox.html(`An error occurred. Check console.`);
                 console.log(`An error occurred: Either the random.org service is unavailable or the free quota has been reached for the day.`);
             } else {
-                passTextBox.html(`An error occurred. Check console.`);
+                passTextBox.html(`An unknown error occurred. Check console.`);
                 console.log(`An error occurred: ${res.status}`);
             }
+
+            passGenerateButton.html(`<i
+                      class="fas fa-chart-pie"></i>
+                    Generate</a>`);
         })
     })
 
@@ -195,7 +205,10 @@ const generateUsername = () => {
     let wordLength = nameLength / 2;
     let nameTextBox = $('#username');
 
+    // Display 'loading' text to the user as feedback for the button click
     nameTextBox.html('Loading...');
+    // Change the button to show the username is being generated
+    userGenerateButton.html('Generating...');
 
     initUsernameSettings();
 
@@ -236,6 +249,11 @@ ${res.status}: ${res.data.message}`);
                 nameTextBox.html(`An error occurred. Check console.`);
                 console.log(`${res.status}: ${res.data.message}`);
             }
+            
+            userGenerateButton.html(`<i
+                      class="fas fa-chart-pie"></i>
+                    Generate</a>`);
+
         }));
 }
 
@@ -261,7 +279,7 @@ saveButton.on('click', () => {
 
 passGenerateButton.on('click', validatePassInput);
 userGenerateButton.on('click', generateUsername);
-// I am able to press the button and generate both at the same time
+// I am able to press the button and generate both user & pass at the same time
 bothGenerateButton.on('click', () => {
     generateUsername();
     validatePassInput();
