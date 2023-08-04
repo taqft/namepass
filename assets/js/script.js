@@ -1,7 +1,7 @@
 // username options
 // verbs and nouns are mutally exclusive
 // common and uncommon words are mutually exclusive
-// edit: 'popular' and 'include uncommon' now used for word frequency selection 
+// v1.0.1: 'popular' and 'include uncommon' now used for word frequency selection 
 const verbInput = $('#verbs'); // id="verbs"
 const nounInput = $('#nouns'); // id="nouns"
 const nameLengthSlider = $('#name-max'); // id="word-max"
@@ -30,7 +30,6 @@ const saveButton = $("#btn-save"); // id="btn-save"
 // username
 verbInput.attr('checked', true);
 uncommonWordInput.attr('checked', true);
-
 // and password
 lowerInput.attr('checked', true);
 upperInput.attr('checked', true);
@@ -58,7 +57,6 @@ let minimumWordFrequency = '10';
 // Set the input (checkbox) values so they remain mutally exclusive
 $('input:checkbox').change(
     function () {
-
         if ($(this).attr('id') === 'verbs' && nounInput.is(':checked')) {
             nounInput.prop('checked', false);
         } else if ($(this).attr('id') === 'nouns' && verbInput.is(':checked')) {
@@ -78,7 +76,6 @@ $('input:checkbox').change(
         } else if ($(this).attr('id') === 'uncommon' && !commonWordInput.is(':checked')) {
             $(this).prop('checked', true);
         }
-
     });
 
 passLengthSlider.on('input', () => {
@@ -103,7 +100,6 @@ const validatePassInput = () => {
 
 // initialize the possibleChars array to prep for password generation
 const initPassSettings = () => {
-
     if (lowerInput.is(':checked')) {
         possibleChars = possibleChars.concat(lowerChars);
     }
@@ -118,19 +114,17 @@ const initPassSettings = () => {
     }
 }
 
-// Choose password length 8-128 characters
+// initialize password length
 let passLength = passLengthSlider.value;
 const generatePassword = () => {
-
     // Choose password length 8-128 characters
     let passLength = passLengthSlider.val();
     let passTextBox = $('#password');
     let newChar = '';
     let nextChar = '';
 
-    // Display 'loading' text to the user as feedback for the button click
+    // Display 'loading/generating' text to the user for clarity
     passTextBox.html('Loading...');
-    // Change the button to show the username is being generated
     passGenerateButton.html('Generating...');
     possibleChars = [];
     nums = [];
@@ -151,7 +145,7 @@ const generatePassword = () => {
                 nums = res.data.split('\n');
                 // console.log(nums);
 
-                // clear the text box prior to generating the password
+                // clear the text box prior to displaying the new password
                 passTextBox.html('');
 
                 // a password is generated that matches the selected criteria
@@ -160,7 +154,7 @@ const generatePassword = () => {
                     newChar = String.fromCharCode(possibleChars[nextChar]);
                     passTextBox.append(newChar);
                 }
-
+                // TODO: ensure that generate buttons are not active while generation is in progress
                 generatePassActive = true;
             } else if (res.status === 503) {
                 passTextBox.html(`An error occurred. Check console.`);
@@ -200,14 +194,12 @@ const initUsernameSettings = () => {
 }
 
 const generateUsername = () => {
-
     let nameLength = nameLengthSlider.val();
     let wordLength = nameLength / 2;
     let nameTextBox = $('#username');
 
-    // Display 'loading' text to the user as feedback for the button click
+    // Display 'loading/generating' text to the user for clarity
     nameTextBox.html('Loading...');
-    // Change the button to show the username is being generated
     userGenerateButton.html('Generating...');
 
     initUsernameSettings();
@@ -249,7 +241,7 @@ ${res.status}: ${res.data.message}`);
                 nameTextBox.html(`An error occurred. Check console.`);
                 console.log(`${res.status}: ${res.data.message}`);
             }
-            
+
             userGenerateButton.html(`<i
                       class="fas fa-chart-pie"></i>
                     Generate</a>`);
@@ -259,7 +251,6 @@ ${res.status}: ${res.data.message}`);
 
 // I have the option to save my username + password combo for later
 function saveNamePass() {
-
     let namePass = JSON.parse(localStorage.getItem(`namePass`) || "[]");
     namePass.push(userPass);
     localStorage.setItem(`namePass`, JSON.stringify(namePass));
@@ -282,6 +273,8 @@ passGenerateButton.on('click', validatePassInput);
 userGenerateButton.on('click', generateUsername);
 // I am able to press the button and generate both user & pass at the same time
 bothGenerateButton.on('click', () => {
+    // no validation function is needed for Username generation since the config
+    // does not allow for an invalid state; some username can always be generated
     generateUsername();
     validatePassInput();
 });
