@@ -1,11 +1,15 @@
 const namePassEl = $('#name-pass');
 const clearBtn = $('#clear-btn');
 
+// HTML elements for dark/light mode
+const colorModeSwitch = $('#colormode'); // id="colormode"
+const navbarBox = $('#navbar'); // id="navbar"
+const body = $('#body'); // id="navbar"
 
 // grab existing information from storage
-const namePass = JSON.parse(localStorage.getItem(`namePass`));
+const namePass = JSON.parse(localStorage.getItem(`namePass`)) || `[]`;
 
-// dynamically add all saved information from storage + the new highscore to the screen
+// dynamically add all saved information from storage to the screen
 for (let i = 0; i < namePass.length; i++) {
     let namePassItem = $('<li>')
         .text(`${i+1}. User: \u00A0 ${namePass[i].user}`)
@@ -18,6 +22,46 @@ for (let i = 0; i < namePass.length; i++) {
     namePassEl.append(namePassItem);
     namePassEl.append(passNameItem);
 }
+
+const colorModeSelection = JSON.parse(localStorage.getItem(`colormode`)) || JSON.stringify("dark");
+
+// allow dark mode toggle
+// bonus: remember your last setting
+if (colorModeSelection == "light") {
+    navbarBox.removeClass("navbar-dark");
+    navbarBox.removeClass("bg-black");
+    body.removeClass("bg-dark");
+    navbarBox.addClass("navbar-light");
+    navbarBox.addClass("bg-light");
+    colorModeSwitch.html("🌙");
+} else {
+    navbarBox.removeClass("navbar-light");
+    navbarBox.removeClass("bg-light");
+    navbarBox.addClass("navbar-dark");
+    navbarBox.addClass("bg-black");
+    body.addClass("bg-dark");
+    colorModeSwitch.html("☀️");
+};
+
+colorModeSwitch.on('click', () => {
+    if (colorModeSwitch.html() == "🌙") {
+        localStorage.setItem(`colormode`, JSON.stringify("dark"));
+        navbarBox.removeClass("navbar-light");
+        navbarBox.removeClass("bg-light");
+        navbarBox.addClass("navbar-dark");
+        navbarBox.addClass("bg-black");
+        body.addClass("bg-dark");
+        colorModeSwitch.html("☀️");
+    } else {
+        localStorage.setItem(`colormode`, JSON.stringify("light"));
+        navbarBox.removeClass("navbar-dark");
+        navbarBox.removeClass("bg-black");
+        body.removeClass("bg-dark");
+        navbarBox.addClass("navbar-light");
+        navbarBox.addClass("bg-light");
+        colorModeSwitch.html("🌙");
+    };
+});
 
 // when the clear everything button is pressed, all saved data is deleted and the page is refreshed
 clearBtn.on('click', () => {

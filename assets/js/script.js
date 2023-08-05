@@ -25,6 +25,11 @@ const passCopyButton = $('#pass-copy'); // id="pass-copy"
 const bothGenerateButton = $('#both-generate'); // id="both-generate"
 const saveButton = $("#btn-save"); // id="btn-save"
 
+// HTML elements for dark/light mode
+const navbarBox = $('#navbar'); // id="navbar"
+const body = $('#body'); // id="navbar"
+const colorModeSwitch = $('#colormode'); // id="colormode"
+
 // Initialize the necessary checkboxes so they are checked when the page loads.
 // default options are loaded for each:
 // username
@@ -53,6 +58,28 @@ let generateUserActive = true;
 // Initialize Wordnik API parameters
 let partOfSpeech = 'verb';
 let minimumWordFrequency = '10';
+
+const colorModeSelection = JSON.parse(localStorage.getItem(`colormode`)) || JSON.stringify("dark");
+
+// allow dark mode toggle
+// bonus: remember your last setting
+if (colorModeSelection == "light") {
+    localStorage.setItem(`colormode`, JSON.stringify("light"));
+    navbarBox.removeClass("navbar-dark");
+    navbarBox.removeClass("bg-black");
+    body.removeClass("bg-dark");
+    navbarBox.addClass("navbar-light");
+    navbarBox.addClass("bg-light");
+    colorModeSwitch.html("🌙");
+} else {
+    localStorage.setItem(`colormode`, JSON.stringify("dark"));
+    navbarBox.removeClass("navbar-light");
+    navbarBox.removeClass("bg-light");
+    navbarBox.addClass("navbar-dark");
+    navbarBox.addClass("bg-black");
+    body.addClass("bg-dark");
+    colorModeSwitch.html("☀️");
+};
 
 // Set the input (checkbox) values so they remain mutally exclusive
 $('input:checkbox').change(
@@ -250,13 +277,34 @@ ${res.status}: ${res.data.message}`);
 }
 
 // I have the option to save my username + password combo for later
-function saveNamePass() {
+const saveNamePass = () => {
     let namePass = JSON.parse(localStorage.getItem(`namePass`) || "[]");
     namePass.push(userPass);
     localStorage.setItem(`namePass`, JSON.stringify(namePass));
-    saveButton.html(`Saved!`)
+    saveButton.html(`Saved!`);
     setTimeout(() => saveButton.html(`<i class="fa fa-save"></i> Save</a>`), 1200);
 }
+
+// I have the option to toggle dark mode
+colorModeSwitch.on('click', () => {
+    if (colorModeSwitch.html() == "🌙") {
+        localStorage.setItem(`colormode`, JSON.stringify("dark"));
+        navbarBox.removeClass("navbar-light");
+        navbarBox.removeClass("bg-light");
+        navbarBox.addClass("navbar-dark");
+        navbarBox.addClass("bg-black");
+        body.addClass("bg-dark");
+        colorModeSwitch.html("☀️");
+    } else {
+        localStorage.setItem(`colormode`, JSON.stringify("light"));
+        navbarBox.removeClass("navbar-dark");
+        navbarBox.removeClass("bg-black");
+        body.removeClass("bg-dark");
+        navbarBox.addClass("navbar-light");
+        navbarBox.addClass("bg-light");
+        colorModeSwitch.html("🌙");
+    };
+});
 
 // save button logic
 saveButton.on('click', () => {
@@ -296,6 +344,6 @@ passCopyButton.on('click', () => {
     $(copyText).select();
 
     navigator.clipboard.writeText(copyText.html());
-    passCopyButton.html(`Copied!`)
+    passCopyButton.html(`Copied!`);
     setTimeout(() => passCopyButton.html(`<i class="fas fa-clone left"></i> Copy</a>`), 1200);
 })
