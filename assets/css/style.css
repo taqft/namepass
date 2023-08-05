@@ -4,6 +4,13 @@ body {
     height: 100%;
 }
 
+a,
+label,
+p,
+strong {
+    user-select: none;
+}
+
 .btn:hover {
     color: aqua;
     cursor: pointer;
